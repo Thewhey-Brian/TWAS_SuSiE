@@ -1,0 +1,72 @@
+---
+title: "SuSiE"
+author: "Xinyu Guo"
+date: "5/7/2021"
+output: html_document
+---
+
+## Load some packages
+```{r}
+#devtools::install_github("stephenslab/susieR")
+library(susieR)
+library(tidyverse)
+```
+
+## get familiar with the package
+```{r}
+data(N3finemapping)
+attach(N3finemapping)
+dim(Y)
+b <- true_coef[,1]
+plot(b, pch=16, ylab='effect size')
+which(b != 0)
+sumstats <- univariate_regression(X, Y[,1])
+z_scores <- sumstats$betahat / sumstats$sebetahat
+susie_plot(z_scores, y = "z", b=b)
+R <- cor(X)
+fitted_rss <- susie_rss(z_scores, R, L = 10)
+summary(fitted_rss)$cs
+susie_plot(fitted_rss, y="PIP", b=b)
+```
+
+## Load data
+```{r}
+load("/Users/xinyuguo/Desktop/JHU/Genetics/ad_TWAS.RData")
+load("/Users/xinyuguo/Desktop/JHU/Genetics/cov_matrix.RData")
+head(dat_ad_n[[1]])
+length(cov_matrix)
+dat_ad <- dat_ad_n[[1]]
+all_gene <- dat_ad$GENE
+# sort complete data
+dat_ad_complete <- dat_ad %>% 
+  drop_na()
+## gene: EXOC3L2
+gene <- "KAT8"
+dat_susie <- dat_ad_complete %>% 
+  filter(GENE == gene)
+dat_imput <- as.numeric(dat_susie[, -1])
+cor_matrix <- cov2cor(cov_matrix[[gene]])
+fitted_rss <- susie_rss(dat_imput, cor_matrix, L = 3)
+summary(fitted_rss)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
