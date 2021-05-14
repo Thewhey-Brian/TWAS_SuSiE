@@ -1,0 +1,153 @@
+---
+title: "Fine Mapping With TWAS Results Across Multiple Tissues"
+author: "Shuai Li, Xinyu (Brian) Guo"
+date: "May 14, 2021"
+institute: "Johns Hopkins Bloomberg School of Public Health"
+output: 
+  beamer_presentation:
+    theme: "Ilmenau"
+    colortheme: "dolphin"
+    fonttheme: "serif"
+    slide_level: 2
+    toc: true
+---
+
+# Background and Methods
+
+## What is TWAS?
+
+- TWAS: transcriptome-wide association study.
+- To determine significant trait-expression associations. \footnotemark
+- This method increases the power of identifying functionally relevant loci by leveraging expression quantitative trait loci (eQTLs) from external references in relevant tissues. \footnotemark
+
+\footnotetext[1]{Gusev et al. “Integrative approaches for large-scale transcriptome-wide association studies” 2016 Nature Genetics}
+\footnotetext[2]{Bhattacharya et al. “A framework for transcriptome-wide association studies in breast cancer in diverse study populations” 2020 Genome Biology}
+
+## TWAS/FUSION Softwar
+
+\begin{itemize}
+\item Functional Summary-based Imputation:
+
+FUSION is a suite of tools for performing a TWAS by predicting functional/molecular phenotypes into GWAS using only summary statistics (usually from GWAS). The goal is to identify associations between a GWAS phenotype and a functional phenotype that was only measured in reference data. \footnotemark[1]
+\end{itemize}
+
+\footnotetext[1]{Gusev et al. “Integrative approaches for large-scale transcriptome-wide association studies” 2016 Nature Genetics}
+
+## TWAS/FUSION Softwar
+
+\begin{itemize}
+\item Inputs:
+\begin{itemize}
+\item GWAS summary statistics
+\item Reference panels (i.e. precomputed functional weights (primarily gene expression) from multiple tissues)
+\item Regerence LD data
+\end{itemize}
+\item Outputs: 
+\begin{itemize}
+\item A data frame with corresponding z and p values for each SNPs.
+\end{itemize}
+\end{itemize}
+\footnotetext[1]{Gusev et al. “Integrative approaches for large-scale transcriptome-wide association studies” 2016 Nature Genetics}
+
+## Bayesian Fine Mapping
+
+\begin{itemize}
+\item Why fine-map? 
+\begin{itemize}
+\item To find causal genes
+\item To pinpoint variant
+\item To understand genetic architecture
+\begin{itemize}
+\item Gene enrichment
+\item Cross-trait comparison, cross-tissue
+\end{itemize}
+\end{itemize}
+\item Bayesian fine-mapping outputs:
+\begin{itemize}
+\item PIP: Posterior inclusion probability (the probability that a variant is causal)
+\item $95\%$ Credible Sets: Set of variants that contains $\geq95\%$ probability
+\end{itemize}
+\end{itemize}
+\footnotetext[3]{\href{https://www.youtube.com/watch?v=S6vfOr336b0}{\beamergotobutton{Hilary Finucane, Broad Institute}}}
+
+## Bayesian Fine Mapping 
+\begin{itemize}
+\item Single-causal-variant PIPs:
+\begin{eqnarray*}
+PIP_{j} &=& P(\text{j causal | data}) \\
+        &=& \frac{P(\text{data | j causal})}{\sum_{k} P(\text{data | k causal})}\\
+        &=& \frac{P(\text{data | j causal})/P(data | no causal)}{\sum_{k} P(\text{data | k causal})/P(data | no causal)}\\
+        &=& \frac{\text{Bayesian Factor}_{j}}{\sum_{k} \text{Bayesian Factor}_{k}}
+\end{eqnarray*}
+\end{itemize}
+\footnotetext[3]{\href{https://www.youtube.com/watch?v=S6vfOr336b0}{\beamergotobutton{Hilary Finucane, Broad Institute}}}
+
+## Bayesian Fine Mapping 
+\begin{itemize}
+\item $95\%$ Credible Sets (S):
+\[
+P(\text{causal var is in S})\geq 0.95
+\]
+\item Under Single-causal-variant assumption:
+\[
+P(\text{causal var is in S}) = \sum_{j\in S}PIP_{j}
+\]
+\item To get the most compact credible set, add variant with highest PIPs untill sum to 0.95.
+\end{itemize}
+\footnotetext[3]{\href{https://www.youtube.com/watch?v=S6vfOr336b0}{\beamergotobutton{Hilary Finucane, Broad Institute}}}
+
+## Bayesian Fine Mapping 
+\begin{itemize}
+\item Factors affecting Bayesian fine mapping power
+\begin{itemize}
+\item LD
+\item Sample Size
+\item Effect size
+\end{itemize}
+\end{itemize}
+\footnotetext[4]{Schaid et al. Nat Rev Genet 2018}
+
+## Bayesian Fine Mapping 
+\begin{itemize}
+\item Multiple-causal-variant Fine-mapping (two approaches):
+\begin{itemize}
+\item Divide the whole data into many pieces, and apply single-causal-variant fine-mapping in each piece
+\item Jointly model Multiple-causal-variant
+\end{itemize}
+\end{itemize}
+\footnotetext[3]{\href{https://www.youtube.com/watch?v=S6vfOr336b0}{\beamergotobutton{Hilary Finucane, Broad Institute}}}
+
+# Data For Alzheimer's Disease
+
+# Analysis (SuSiE)
+
+# Reference
+
+## Reference
+
+- Gusev et al. “Integrative approaches for large-scale transcriptome-wide association studies” 2016 Nature Genetics
+
+- Wang, G., Sarkar, A., Carbonetto, P., & Stephens, M. (2020). A simple new approach to variable selection in regression, with application to genetic fine mapping. Journal of the Royal Statistical Society: Series B (Statistical Methodology). https://doi.org/10.1111/rssb.12388
+
+- Schaid, D.J., Chen, W. & Larson, N.B. From genome-wide associations to candidate causal variants by statistical fine-mapping. Nat Rev Genet 19, 491–504 (2018). https://doi.org/10.1038/s41576-018-0016-z
+
+- \href{https://www.youtube.com/watch?v=S6vfOr336b0}{\beamergotobutton{Hilary Finucane, Broad Institute}}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

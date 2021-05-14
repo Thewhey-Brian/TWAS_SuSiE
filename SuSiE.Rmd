@@ -31,8 +31,8 @@ susie_plot(fitted_rss, y="PIP", b=b)
 
 ## Load data
 ```{r}
-load("/Users/xinyuguo/Desktop/JHU/Genetics/ad_TWAS.RData")
-load("/Users/xinyuguo/Desktop/JHU/Genetics/cov_matrix.RData")
+load("./ad_TWAS.RData")
+load("./cov_matrix.RData")
 head(dat_ad_n[[1]])
 length(cov_matrix)
 dat_ad <- dat_ad_n[[1]]
