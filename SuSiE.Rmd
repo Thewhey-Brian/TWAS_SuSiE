@@ -40,15 +40,53 @@ all_gene <- dat_ad$GENE
 # sort complete data
 dat_ad_complete <- dat_ad %>% 
   drop_na()
-## gene: EXOC3L2
-gene <- "KAT8"
+gene <- "CCAR1"
 dat_susie <- dat_ad_complete %>% 
   filter(GENE == gene)
-dat_imput <- as.numeric(dat_susie[, -1])
+dat_input <- as.numeric(dat_susie[, -1])
 cor_matrix <- cov2cor(cov_matrix[[gene]])
-fitted_rss <- susie_rss(dat_imput, cor_matrix, L = 3)
-summary(fitted_rss)
+fitted_rss <- susie_rss(dat_input, cor_matrix, L = 3)
+fitted_rss
 ```
+
+## Run SuSiE
+```{r}
+run_susie <- function(gene, data, cov_matrix, l = 3){
+  dat_gene <- data %>% 
+    filter(GENE == gene) %>% 
+    select_if(!is.na(.))
+  dat_gene <- dat_gene[, -1]
+  dat_gene <- dat_gene[, is.finite(as.numeric(dat_gene))] # check finite
+  cov_gene <- cov_matrix[[gene]]
+  if(ncol(dat_gene) >= ncol(cov_gene)){
+    dat_gene = dat_gene %>% select(gsub("\\.", "-", rownames(cov_gene)))
+  }
+  else{
+    cov_gene = cov_gene[gsub("-", "\\.", names(dat_gene)), gsub("-", "\\.", names(dat_gene))]
+  }
+  dat_input <- as.numeric(dat_gene)
+  fitted_rss <- susie_rss(dat_input, cov_gene, L = l)
+  vars <- names(dat_gene)
+  out <- list(fitted_rss, vars)
+  return(out)
+}
+
+# res <- run_susie("EXOC3L2", dat_ad, cov_matrix, 4)
+
+all_res <- data.frame()
+for (gene in all_gene) {
+  res <- run_susie(gene, dat_ad, cov_matrix, 4)
+  nms <- res[[2]]
+  smy <- summary(res[[1]])
+  tem_out <- smy$vars %>% 
+    mutate(tissues = nms[smy$vars$variable], 
+           GENE = gene) %>% 
+    filter(cs > 0) %>% 
+    select(-variable)
+  all_res <- rbind(all_res, tem_out)
+}
+```
+
 
 ##Go through all data to see whether there is non-null cs
 
@@ -71,11 +109,11 @@ for(gene in dat_ad_complete$GENE){
   
   #take out gene of interested
   dat_susie <- dat_ad_complete %>% filter(GENE == gene)
-  dat_imput <- dat_susie[, -1]
+  dat_input <- dat_susie[, -1]
   
   #take index for non-na data
-  index = which(!is.na(dat_imput))
-  no.na.col = colnames(dat_imput)[index]
+  index = which(!is.na(dat_input))
+  no.na.col = colnames(dat_input)[index]
   
   #take corresponding cor.matrix 
   cor_matrix <- cov2cor(cov_matrix[[gene]])
@@ -85,7 +123,7 @@ for(gene in dat_ad_complete$GENE){
   col.choose = no.na.col[which(no.na.col %in% cor.col)]
   
   cor_matrix = cor_matrix[col.choose,col.choose]
-  dat_imput = dat_imput[,col.choose]
+  dat_input = dat_input[,col.choose]
   
   #ignore data with few characters, one can modify the threshold
   if(length(col.choose)<=1){
@@ -93,7 +131,7 @@ for(gene in dat_ad_complete$GENE){
    }
   
   #fit model
-  fitted_rss <- susie_rss(as.numeric(dat_imput), cor_matrix, L = 3)
+  fitted_rss <- susie_rss(as.numeric(dat_input), cor_matrix, L = 3)
   
   if(!is.null(summary(fitted_rss)$cs)){
     print(gene)
@@ -127,11 +165,11 @@ for(gene in dat_ad_complete$GENE){
   
   #take out gene of interested
   dat_susie <- dat_ad_complete %>% filter(GENE == gene)
-  dat_imput <- dat_susie[, -1]
+  dat_input <- dat_susie[, -1]
   
   #take index for non-na data
-  index = which(!is.na(dat_imput))
-  no.na.col = colnames(dat_imput)[index]
+  index = which(!is.na(dat_input))
+  no.na.col = colnames(dat_input)[index]
   
   #take corresponding cor.matrix 
   cor_matrix <- cov2cor(cov_matrix[[gene]])
@@ -141,7 +179,7 @@ for(gene in dat_ad_complete$GENE){
   col.choose = no.na.col[which(no.na.col %in% cor.col)]
   
   cor_matrix = cor_matrix[col.choose,col.choose]
-  dat_imput = dat_imput[,col.choose]
+  dat_input = dat_input[,col.choose]
   
   #ignore data with few characters, one can modify the threshold
   if(length(col.choose)<=1){
@@ -149,7 +187,7 @@ for(gene in dat_ad_complete$GENE){
    }
   
   #fit model
-  fitted_rss <- susie_rss(as.numeric(dat_imput), cor_matrix, L = 3)
+  fitted_rss <- susie_rss(as.numeric(dat_input), cor_matrix, L = 3)
   
   if(!is.null(summary(fitted_rss)$cs)){
     print(gene)
