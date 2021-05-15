@@ -23,7 +23,7 @@ output:
 \footnotetext[1]{Gusev et al. “Integrative approaches for large-scale transcriptome-wide association studies” 2016 Nature Genetics}
 \footnotetext[2]{Bhattacharya et al. “A framework for transcriptome-wide association studies in breast cancer in diverse study populations” 2020 Genome Biology}
 
-## TWAS/FUSION Softwar
+## TWAS/FUSION Software
 
 \begin{itemize}
 \item Functional Summary-based Imputation:
@@ -33,7 +33,7 @@ FUSION is a suite of tools for performing a TWAS by predicting functional/molecu
 
 \footnotetext[1]{Gusev et al. “Integrative approaches for large-scale transcriptome-wide association studies” 2016 Nature Genetics}
 
-## TWAS/FUSION Softwar
+## TWAS/FUSION Software
 
 \begin{itemize}
 \item Inputs:
