@@ -50,7 +50,59 @@ fitted_rss <- susie_rss(dat_imput, cor_matrix, L = 3)
 summary(fitted_rss)
 ```
 
+##Go through all data to see whether there is non-null cs
 
+```{r}
+dat_ad <- dat_ad_n[[2]]
+all_gene <- dat_ad$GENE
+#Here I use all data
+
+dat_ad_complete <- dat_ad
+
+i=0
+for(gene in dat_ad_complete$GENE){
+  
+  #check out print
+  i=i+1
+  if(i%%100==0){
+    print(paste('check',i,gene,sep='-'))
+    print(summary(fitted_rss)$cs)
+  }
+  
+  #take out gene of interested
+  dat_susie <- dat_ad_complete %>% filter(GENE == gene)
+  dat_imput <- dat_susie[, -1]
+  
+  #take index for non-na data
+  index = which(!is.na(dat_imput))
+  no.na.col = colnames(dat_imput)[index]
+  
+  #take corresponding cor.matrix 
+  cor_matrix <- cov2cor(cov_matrix[[gene]])
+  cor.col = colnames(cor_matrix)
+  
+  #take the intersection of col between data and cor.matrix to make them same length 
+  col.choose = no.na.col[which(no.na.col %in% cor.col)]
+  
+  cor_matrix = cor_matrix[col.choose,col.choose]
+  dat_imput = dat_imput[,col.choose]
+  
+  #ignore data with few characters, one can modify the threshold
+  if(length(col.choose)<=1){
+    next
+   }
+  
+  #fit model
+  fitted_rss <- susie_rss(as.numeric(dat_imput), cor_matrix, L = 3)
+  
+  if(!is.null(summary(fitted_rss)$cs)){
+    print(gene)
+    print(summary(fitted_rss)$cs)
+  }
+}
+```
+
+The results is that all of them are null. I will check for dat_ad <- dat_ad_n[[1]] later
 
 
 
