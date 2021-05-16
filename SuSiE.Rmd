@@ -123,7 +123,7 @@ plot_pip <- function(gene, dat_ad, cov_matrix, all_res){
   ggplot() + 
     geom_point( aes(x = var,y = (as.numeric(pip.value)) ), size=4, alpha=0.7,color=color.vec ) +
     theme_minimal() +
-    labs(x="Tissues",y='PiP',title=gene) + 
+    labs(x="Tissues",y='PIP',title=gene) + 
     theme(plot.title = element_text(hjust=0.5),axis.text.x = element_text(size=10,angle=70, vjust=.8, hjust=0.8))
   
 }
