@@ -75,15 +75,17 @@ run_susie <- function(gene, data, cov_matrix, l = 3){
 
 all_res <- data.frame()
 for (gene in all_gene) {
-  res <- run_susie(gene, dat_ad, cov_matrix, 4)
-  nms <- res[[2]]
-  smy <- summary(res[[1]])
-  tem_out <- smy$vars %>% 
-    mutate(tissues = nms[smy$vars$variable], 
-           GENE = gene) %>% 
-    filter(cs > 0) %>% 
-    select(-variable)
-  all_res <- rbind(all_res, tem_out)
+  tryCatch({
+      res <- run_susie(gene, dat_ad, cov_matrix, 4)
+      nms <- res[[2]]
+      smy <- summary(res[[1]])
+      tem_out <- smy$vars %>% 
+        mutate(tissues = nms[smy$vars$variable], 
+               GENE = gene) %>% 
+        filter(cs > 0) %>% 
+        select(-variable)
+      all_res <- rbind(all_res, tem_out)
+  }, error = function(e){cat("ERROR :", gene, conditionMessage(e), "\n")})
 }
 ```
 
