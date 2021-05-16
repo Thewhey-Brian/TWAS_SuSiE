@@ -89,6 +89,51 @@ for (gene in all_gene) {
 }
 ```
 
+## Plotting
+
+plot_pip <- function(gene, dat_ad, cov_matrix, all_res){
+  #run susie first
+  res <- run_susie(gene, dat_ad, cov_matrix, 4)
+  fitted_rss = res[[1]]
+  var = res[[2]]
+  
+  #get p-value
+  #p.value = (dat_ad.p %>% filter(GENE == gene))[,var]
+  
+  #get pip value
+  pip.value = fitted_rss$pip
+  names(pip.value) = var
+  
+  #get color vector
+  color.vec = rep(1,length(pip.value))
+  names(color.vec) = names(pip.value)
+  
+  #this is for p-value
+  #names(color.vec) = colnames(p.value)
+
+  cs.group = all_res %>% filter(`GENE`== gene)
+  color.vec[cs.group$tissues] = cs.group$cs + 1
+  
+  #This three lines, I order them by groups. You can comment it to cancel order
+  order(color.vec,decreasing = FALSE)
+  color.vec = color.vec[order(color.vec,decreasing = FALSE)]
+  pip.value = pip.value[names(color.vec)]
+  
+  library(ggplot2)
+  ggplot() + 
+    geom_point( aes(x = var,y = (as.numeric(pip.value)) ), size=4, alpha=0.7,color=color.vec ) +
+    theme_minimal() +
+    labs(x="Tissues",y='PiP',title="pip-value for different tissues") + 
+    theme(plot.title = element_text(hjust=0.5),axis.text.x = element_text(size=10,angle=70, vjust=.8, hjust=0.8))
+  
+}
+
+#all_res = read.csv('C:\\Users\\lenovo\\Desktop\\TWAS_SuSiE-main\\all_res.csv')
+gene = 'HLA-DRB1'
+#gene='HLA-DQA2'
+
+plot_pip(gene,dat_ad,cov_matrix,all_res)
+
 
 ##Go through all data to see whether there is non-null cs
 
