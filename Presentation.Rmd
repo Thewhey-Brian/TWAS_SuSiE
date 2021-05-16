@@ -133,8 +133,8 @@ P(\text{causal var is in S}) = \sum_{j\in S}PIP_{j}
 \end{itemize}
 
 ```{r,echo=F}
-load('C:\\Users\\lenovo\\Desktop\\bay proj\\ad_TWAS.RData')
-load('C:\\Users\\lenovo\\Desktop\\bay proj\\cov_matrix.RData')
+load('./ad_TWAS.RData')
+load('./cov_matrix.RData')
 ```
 
 ## Gene Expression matrix
@@ -218,7 +218,7 @@ We loop through all genes. For each gene, we implement run\_susie, and take out 
 ## Result
 
 ```{r,echo=F}
-all_res = read.csv('C:\\Users\\lenovo\\Desktop\\TWAS_SuSiE-main\\all_res.csv')
+all_res = read.csv('./all_res.csv')
 ```
 
 ```{r}
